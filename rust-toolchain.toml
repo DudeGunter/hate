@@ -1,0 +1,3 @@
+[toolchain]
+# this is NEEDED for the duck_back error handling
+channel = "nightly"

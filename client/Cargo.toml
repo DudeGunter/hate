@@ -1,0 +1,17 @@
+[package]
+name = "client"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy.workspace = true
+shared.workspace = true
+bevy_console.workspace = true
+bevy-inspector-egui.workspace = true
+duck_back.workspace = true
+aeronet.workspace = true
+aeronet_webtransport = { workspace = true, features = ["client"] }
+aeronet_replicon = { workspace = true, features = ["client"] }
+bevy_replicon = { workspace = true, features = ["client"] }
+log.workspace = true
+tracing.workspace = true

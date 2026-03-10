@@ -1,0 +1,51 @@
+use crate::{connect::ConnectClient, host::StartHostServer};
+use bevy::prelude::*;
+use shared::GameState;
+
+pub fn plugin(app: &mut App) {
+    app.add_systems(OnEnter(GameState::MainMenu), spawn_ui);
+    app.add_systems(
+        Update,
+        (
+            trigger_event_on_button_pressed::<StartHostServer>,
+            trigger_event_on_button_pressed::<ConnectClient>,
+        ),
+    );
+}
+
+pub fn spawn_ui(mut commands: Commands) {
+    commands.spawn((DespawnOnExit(GameState::MainMenu), Camera2d::default()));
+
+    commands.spawn((
+        DespawnOnExit(GameState::MainMenu),
+        Node {
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center,
+            flex_direction: FlexDirection::Column,
+            width: percent(100),
+            height: percent(100),
+            ..default()
+        },
+        children![
+            text("Main Menu"),
+            (text("Host"), StartHostServer, Button),
+            (text("Connect"), ConnectClient, Button),
+        ],
+    ));
+}
+
+pub fn trigger_event_on_button_pressed<'a, E: Event<Trigger<'a>: Default> + Component + Clone>(
+    mut commands: Commands,
+    query: Query<(&Interaction, &E), Changed<Interaction>>,
+) {
+    for (interaction, event_component) in query {
+        match *interaction {
+            Interaction::Pressed => commands.trigger(event_component.clone()),
+            _ => {}
+        }
+    }
+}
+
+fn text<S: Into<String>>(string: S) -> Text {
+    Text::new(string)
+}

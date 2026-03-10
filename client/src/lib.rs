@@ -1,0 +1,43 @@
+use aeronet_replicon::client::*;
+use aeronet_webtransport::client::*;
+use bevy::{log::LogPlugin, prelude::*};
+use bevy_console::prelude::*;
+use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
+use bevy_replicon::prelude::*;
+
+mod connect;
+mod control;
+mod host;
+mod lobby;
+mod main_menu;
+
+pub fn plugin(app: &mut App) {
+    app.add_plugins((
+        DefaultPlugins.set(LogPlugin {
+            custom_layer: custom_log_layer,
+            filter: "duck_back=trace".to_string(),
+            ..default()
+        }),
+        EguiPlugin::default(),
+        WorldInspectorPlugin::new(),
+        ConsolePlugin,
+        WebTransportClientPlugin,
+        RepliconPlugins,
+        AeronetRepliconClientPlugin,
+        control::plugin,
+        lobby::plugin,
+        shared::plugin,
+        main_menu::plugin,
+    ));
+    app.insert_state(shared::GameState::MainMenu);
+    app.add_observer(host::start_server);
+    app.add_observer(connect::connect_client);
+    app.add_observer(connect::on_connecting);
+    app.add_observer(connect::on_connected);
+    app.insert_command("start_host", |_: In<String>, mut commands: Commands| {
+        commands.trigger(host::StartHostServer);
+    });
+    app.insert_command("connect", |_: In<String>, mut commands: Commands| {
+        commands.trigger(connect::ConnectClient);
+    });
+}
