@@ -34,6 +34,9 @@ pub fn spawn_ui(mut commands: Commands) {
     ));
 }
 
+/// The type T has to be both an Event and a Component.
+/// Queries for an entity with component T and triggers
+/// the component if Interaction is pressed.
 pub fn trigger_event_on_button_pressed<'a, E: Event<Trigger<'a>: Default> + Component + Clone>(
     mut commands: Commands,
     query: Query<(&Interaction, &E), Changed<Interaction>>,
