@@ -9,13 +9,16 @@ pub fn plugin(app: &mut App) {
     app.add_server_message::<GoTo>(Channel::Ordered);
 }
 
-// Any client with this can have control authority over the server
+/// Any client with this can have control authority over the server
 #[derive(Component, Reflect, Serialize, Deserialize)]
 pub struct ControlAuthority;
 
+/// A client with ```ControlAuthority``` can send this to the server,
+/// which is then relayed to all clients and the server
 #[derive(Message, Serialize, Deserialize, Clone, Copy)]
 pub struct GoTo(pub GameState);
 
+// This should probably go into the server module.
 pub fn relay_client_authoritive_message<'a, M: Message + Serialize + Deserialize<'a> + Clone>(
     mut messages: MessageReader<FromClient<M>>,
     mut to_clients: MessageWriter<ToClients<M>>,
