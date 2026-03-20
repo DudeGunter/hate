@@ -1,8 +1,12 @@
-use crate::ownership::*;
+use crate::{
+    main_menu::{text, trigger_event_on_button_pressed},
+    ownership::*,
+};
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
     GameState,
+    control::GoTo,
     player::{Player, PlayerColor},
 };
 
@@ -10,8 +14,14 @@ pub fn plugin(app: &mut App) {
     app.add_systems(OnEnter(GameState::Lobby), (spawn_lobby, spawn_ui));
     app.add_systems(
         Update,
-        (update_player_count, update_player_color_display).run_if(in_state(GameState::Lobby)),
+        (
+            update_player_count,
+            update_player_color_display,
+            trigger_event_on_button_pressed::<StartGame>,
+        )
+            .run_if(in_state(GameState::Lobby)),
     );
+    app.add_observer(start_game);
 }
 
 pub fn spawn_lobby(mut commands: Commands) {
@@ -27,6 +37,19 @@ pub fn spawn_ui(mut commands: Commands) {
 
     commands.spawn((
         DespawnOnExit(GameState::Lobby),
+        Node {
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center,
+            flex_direction: FlexDirection::Column,
+            width: percent(100),
+            height: percent(100),
+            ..default()
+        },
+        children![(text("Start Game"), StartGame)],
+    ));
+
+    commands.spawn((
+        DespawnOnExit(GameState::Lobby),
         PlayerColorDisplay,
         ZIndex(-1),
         Node {
@@ -35,6 +58,16 @@ pub fn spawn_ui(mut commands: Commands) {
             ..default()
         },
     ));
+}
+
+#[derive(Component, Reflect)]
+pub struct LobbyMenu;
+
+#[derive(Component, Event, Reflect, Clone)]
+pub struct StartGame;
+
+pub fn start_game(_trigger: On<StartGame>, mut goto: MessageWriter<GoTo>) {
+    goto.write(GoTo(GameState::Playing));
 }
 
 #[derive(Component, Reflect)]

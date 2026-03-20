@@ -49,6 +49,6 @@ pub fn trigger_event_on_button_pressed<'a, E: Event<Trigger<'a>: Default> + Comp
     }
 }
 
-fn text<S: Into<String>>(string: S) -> Text {
+pub fn text<S: Into<String>>(string: S) -> Text {
     Text::new(string)
 }
