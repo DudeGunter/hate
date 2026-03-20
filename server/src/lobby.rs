@@ -69,6 +69,7 @@ pub fn on_connected(
     commands
         .entity(client)
         .insert((Player, PlayerColor(color), ControlAuthority, Replicated));
+
     goto.write(ToClients {
         mode: SendMode::Direct(ClientId::Client(client)),
         message: GoTo(GameState::Lobby),

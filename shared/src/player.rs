@@ -6,7 +6,7 @@ pub fn plugin(app: &mut App) {
     app.replicate::<Player>().replicate::<PlayerColor>();
 }
 
-#[derive(Component, Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Component, Reflect, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Player;
 
 #[derive(Component, Reflect, Clone, Copy, Debug, Serialize, Deserialize)]

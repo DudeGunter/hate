@@ -17,21 +17,3 @@ pub struct ControlAuthority;
 /// which is then relayed to all clients and the server
 #[derive(Message, Serialize, Deserialize, Clone, Copy)]
 pub struct GoTo(pub GameState);
-
-// This should probably go into the server module.
-pub fn relay_client_authoritive_message<'a, M: Message + Serialize + Deserialize<'a> + Clone>(
-    mut messages: MessageReader<FromClient<M>>,
-    mut to_clients: MessageWriter<ToClients<M>>,
-    has_control: Query<Entity, With<ControlAuthority>>,
-) {
-    for message in messages.read() {
-        if let Some(from) = message.client_id.entity()
-            && has_control.contains(from)
-        {
-            to_clients.write(ToClients {
-                mode: SendMode::Broadcast,
-                message: message.message.clone(),
-            });
-        }
-    }
-}
