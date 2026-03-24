@@ -1,12 +1,10 @@
-use crate::{
-    main_menu::{text, trigger_event_on_button_pressed},
-    ownership::*,
-};
+use crate::main_menu::{text, trigger_event_on_button_pressed};
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
     GameState,
     control::GoTo,
+    ownership::*,
     player::{Player, PlayerColor},
 };
 
@@ -64,9 +62,11 @@ pub fn spawn_ui(mut commands: Commands) {
 pub struct LobbyMenu;
 
 #[derive(Component, Event, Reflect, Clone)]
+#[require(Button)]
 pub struct StartGame;
 
 pub fn start_game(_trigger: On<StartGame>, mut goto: MessageWriter<GoTo>) {
+    info!("Sending GoTo(GameState::Playing) to server.");
     goto.write(GoTo(GameState::Playing));
 }
 

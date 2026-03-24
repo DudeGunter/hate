@@ -10,7 +10,6 @@ mod control;
 mod host;
 mod lobby;
 mod main_menu;
-mod ownership;
 
 pub fn plugin(app: &mut App) {
     app.add_plugins((
