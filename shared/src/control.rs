@@ -15,5 +15,5 @@ pub struct ControlAuthority;
 
 /// A client with ```ControlAuthority``` can send this to the server,
 /// which is then relayed to all clients and the server
-#[derive(Message, Serialize, Deserialize, Clone, Copy)]
+#[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
 pub struct GoTo(pub GameState);
