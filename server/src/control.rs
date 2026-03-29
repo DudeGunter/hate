@@ -11,11 +11,11 @@ pub fn relay_client_authoritive_message<
     'a,
     M: Message + Serialize + Deserialize<'a> + Clone + std::fmt::Debug,
 >(
-    mut messages: MessageReader<FromClient<M>>,
+    mut from_clients: MessageReader<FromClient<M>>,
     mut to_clients: MessageWriter<ToClients<M>>,
     has_control: Query<Entity, With<ControlAuthority>>,
 ) {
-    for message in messages.read() {
+    for message in from_clients.read() {
         info!("Recieved message from client... attempting to relay.");
         if let Some(from) = message.client_id.entity()
             && has_control.contains(from)
