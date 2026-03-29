@@ -1,27 +1,27 @@
 //! Example: See lobby.rs in client
 //! ```
 //! pub fn update_player_color_display(
-//!    mut commands: Commands,
-//!    display: Single<Entity, With<PlayerColorDisplay>>,
-//!    player_colors: Query<(Entity, &PlayerColor), Added<PlayerColor>>,
-//!) {
-//!    for (player_id, player_color) in player_colors {
-//!     let color_display = commands
-//!           .spawn((
-//!           Node {
-//!                  width: percent(100),
-//!               height: percent(100),
-//!                ..default()
-//!             },
-//!          BackgroundColor(player_color.0),
-//!       ))
-//!       .id();
-//!     commands
-//!         .entity(player_id)
-//!         .add_one_related::<OwnedBy>(color_display);
-//!      commands.entity(*display).add_child(color_display);
-//!  }
-//!}
+//!     mut commands: Commands,
+//!     display: Single<Entity, With<PlayerColorDisplay>>,
+//!     player_colors: Query<(Entity, &PlayerColor), Added<PlayerColor>>,
+//! ) {
+//!     for (player_id, player_color) in player_colors {
+//!         let color_display = commands
+//!             .spawn((
+//!                 Node {
+//!                     width: percent(100),
+//!                     height: percent(100),
+//!                     ..default()
+//!                 },
+//!                 BackgroundColor(player_color.0),
+//!             ))
+//!             .id();
+//!         commands
+//!             .entity(player_id)
+//!             .add_one_related::<OwnedBy>(color_display);
+//!         commands.entity(*display).add_child(color_display);
+//!     }
+//! }
 
 use bevy::prelude::*;
 
