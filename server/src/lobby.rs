@@ -5,6 +5,7 @@ use bevy_replicon::prelude::*;
 use shared::{
     GameState,
     control::{ControlAuthority, GoTo},
+    ownership::OwnedBy,
     player::*,
 };
 use std::time::SystemTime;
@@ -66,9 +67,14 @@ pub fn on_connected(
     )]
     let color = Color::srgb_u8((time * 3) as u8, (time * 5) as u8, (time * 7) as u8);
 
+    let lobby_display = commands
+        .spawn((PlayerColorDisplay, PlayerColor(color), Replicated))
+        .id();
+
     commands
         .entity(client)
-        .insert((Player, PlayerColor(color), ControlAuthority, Replicated));
+        .insert((Player, PlayerColor(color), ControlAuthority, Replicated))
+        .add_one_related::<OwnedBy>(lobby_display);
 
     goto.write(ToClients {
         mode: SendMode::Direct(ClientId::Client(client)),

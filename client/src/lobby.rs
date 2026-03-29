@@ -4,8 +4,7 @@ use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
     GameState,
     control::GoTo,
-    ownership::*,
-    player::{Player, PlayerColor},
+    player::{Player, PlayerColor, PlayerColorDisplay},
 };
 
 pub fn plugin(app: &mut App) {
@@ -14,7 +13,7 @@ pub fn plugin(app: &mut App) {
         Update,
         (
             update_player_count,
-            update_player_color_display,
+            handle_player_color_display,
             trigger_event_on_button_pressed::<StartGame>,
         )
             .run_if(in_state(GameState::Lobby)),
@@ -47,8 +46,9 @@ pub fn spawn_ui(mut commands: Commands) {
     ));
 
     commands.spawn((
+        Name::new("PlayerColorDisplayContainer"),
         DespawnOnExit(GameState::Lobby),
-        PlayerColorDisplay,
+        PlayerColorDisplayContainer,
         ZIndex(-1),
         Node {
             width: percent(100),
@@ -71,7 +71,7 @@ pub fn start_game(_trigger: On<StartGame>, mut goto: MessageWriter<GoTo>) {
 }
 
 #[derive(Component, Reflect)]
-pub struct PlayerColorDisplay;
+pub struct PlayerColorDisplayContainer;
 
 #[derive(Component, Reflect)]
 #[require(Text)]
@@ -84,25 +84,23 @@ pub fn update_player_count(
     text.0 = format!("{} players connected.", n_clients.count());
 }
 
-pub fn update_player_color_display(
+pub fn handle_player_color_display(
     mut commands: Commands,
-    display: Single<Entity, With<PlayerColorDisplay>>,
-    player_colors: Query<(Entity, &PlayerColor), Added<PlayerColor>>,
+    player_color_displays: Query<(Entity, &PlayerColor), (Without<Node>, With<PlayerColorDisplay>)>,
+    containers: Query<Entity, With<PlayerColorDisplayContainer>>,
 ) {
-    for (player_id, player_color) in player_colors {
-        let color_display = commands
-            .spawn((
+    if let Ok(container_entity) = containers.single() {
+        for (entity, color) in player_color_displays {
+            commands.entity(container_entity).add_child(entity);
+            commands.entity(entity).insert((
+                Name::new("PlayerColorDisplay"),
                 Node {
                     width: percent(100),
                     height: percent(100),
                     ..default()
                 },
-                BackgroundColor(player_color.0),
-            ))
-            .id();
-        commands
-            .entity(player_id)
-            .add_one_related::<OwnedBy>(color_display);
-        commands.entity(*display).add_child(color_display);
+                BackgroundColor(color.0),
+            ));
+        }
     }
 }
