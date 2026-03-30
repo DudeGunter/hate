@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 
 pub fn plugin(app: &mut App) {
     app.replicate::<ControlAuthority>();
-    app.add_client_message::<GoTo>(Channel::Ordered);
     app.add_server_message::<GoTo>(Channel::Ordered);
+    app.add_client_message::<GoTo>(Channel::Ordered);
 }
 
 /// Any client with this can have control authority over the server
