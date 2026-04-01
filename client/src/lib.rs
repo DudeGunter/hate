@@ -18,8 +18,8 @@ pub fn plugin(app: &mut App) {
             filter: "duck_back=trace".to_string(),
             ..default()
         }),
-        EguiPlugin::default(),
-        WorldInspectorPlugin::new(),
+        //EguiPlugin::default(),
+        //WorldInspectorPlugin::new(),
         ConsolePlugin,
         WebTransportClientPlugin,
         RepliconPlugins,

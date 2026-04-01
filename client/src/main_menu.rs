@@ -9,7 +9,8 @@ pub fn plugin(app: &mut App) {
         (
             trigger_event_on_button_pressed::<StartHostServer>,
             trigger_event_on_button_pressed::<ConnectClient>,
-        ),
+        )
+            .run_if(in_state(GameState::MainMenu)),
     );
 }
 
