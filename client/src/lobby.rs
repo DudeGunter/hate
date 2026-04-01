@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
     GameState,
-    control::GoTo,
+    control::PleaseGoTo,
     player::{Player, PlayerColor, PlayerColorDisplay},
 };
 
@@ -65,9 +65,9 @@ pub struct LobbyMenu;
 #[require(Button)]
 pub struct StartGame;
 
-pub fn start_game(_trigger: On<StartGame>, mut goto: MessageWriter<GoTo>) {
+pub fn start_game(_trigger: On<StartGame>, mut goto: MessageWriter<PleaseGoTo>) {
     info!("Sending GoTo(GameState::Playing) to server.");
-    goto.write(GoTo(GameState::Playing));
+    goto.write(PleaseGoTo(GameState::Playing));
 }
 
 #[derive(Component, Reflect)]

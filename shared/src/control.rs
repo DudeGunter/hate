@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub fn plugin(app: &mut App) {
     app.replicate::<ControlAuthority>();
     app.add_server_message::<GoTo>(Channel::Ordered);
-    app.add_client_message::<GoTo>(Channel::Ordered);
+    app.add_client_message::<PleaseGoTo>(Channel::Ordered);
 }
 
 /// Any client with this can have control authority over the server
@@ -14,6 +14,11 @@ pub fn plugin(app: &mut App) {
 pub struct ControlAuthority;
 
 /// A client with ```ControlAuthority``` can send this to the server,
-/// which is then relayed to all clients and the server
+/// which is then relayed to all clients and the server as ```GoTo``
+#[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
+pub struct PleaseGoTo(pub GameState);
+
+/// A client with ```ControlAuthority``` can send ```PleaseGoTo``` to the server,
+/// which then relays this to all clients and the server
 #[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
 pub struct GoTo(pub GameState);
