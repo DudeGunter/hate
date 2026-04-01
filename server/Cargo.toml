@@ -6,6 +6,10 @@ edition = "2024"
 [dependencies]
 bevy.workspace = true
 shared.workspace = true
+# tui
+ratatui.workspace = true
+crossterm.workspace = true
+# networking
 serde.workspace = true
 aeronet.workspace = true
 aeronet_webtransport = { workspace = true, features = ["server"] }

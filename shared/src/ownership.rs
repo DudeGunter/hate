@@ -1,4 +1,4 @@
-//! Example: See lobby.rs in client
+//! Ex:
 //! ```
 //! pub fn update_player_color_display(
 //!     mut commands: Commands,

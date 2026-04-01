@@ -19,7 +19,7 @@ members = ["client", "server", "shared"]
 
 [workspace.dependencies]
 # this could be cut down depending on the features used
-bevy = { version = "0.18", default-features = false, features = ["3d", "dynamic_linking", "serialize", "debug"] }
+bevy = { version = "0.18", default-features = false, features = ["dynamic_linking", "serialize", "debug"] }
 # bevy additions
 bevy_console.git = "https://github.com/DudeGunter/bevy_console.git"
 bevy-inspector-egui = "0.36"
@@ -29,6 +29,9 @@ aeronet = "0.19"
 aeronet_webtransport = { version = "0.19", features = ["dangerous-configuration"] }
 aeronet_replicon = "0.19"
 bevy_replicon = "0.38"
+# server tui
+ratatui = "0.30.0"
+crossterm = "0.29.0"
 # error handling
 duck_back = "1.0"
 # Crates within the project

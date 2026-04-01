@@ -8,9 +8,10 @@ use shared::{
 };
 use std::time::Duration;
 
-pub mod control;
-pub mod load;
-pub mod lobby;
+mod control;
+mod load;
+mod lobby;
+mod tui;
 
 pub fn plugin(app: &mut App) {
     app.add_plugins((
@@ -25,6 +26,8 @@ pub fn plugin(app: &mut App) {
         WebTransportServerPlugin,
         RepliconPlugins,
         AeronetRepliconServerPlugin,
+        //tui::plugin,
+        control::plugin,
         shared::plugin,
         lobby::plugin,
         load::plugin,
