@@ -14,7 +14,7 @@ pub fn plugin(app: &mut App) {
 pub struct ControlAuthority;
 
 /// A client with ```ControlAuthority``` can send this to the server,
-/// which is then relayed to all clients and the server as ```GoTo``
+/// which is then relayed to all clients and the server as ```GoTo```
 #[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
 pub struct PleaseGoTo(pub GameState);
 

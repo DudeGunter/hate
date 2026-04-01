@@ -32,6 +32,8 @@ bevy_replicon = "0.38"
 # server tui
 ratatui = "0.30.0"
 crossterm = "0.29.0"
+crossbeam = "0.8"
+chrono = "0.4"
 # error handling
 duck_back = "1.0"
 # Crates within the project

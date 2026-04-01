@@ -6065,6 +6065,8 @@ dependencies = [
  "aeronet_webtransport",
  "bevy",
  "bevy_replicon",
+ "chrono",
+ "crossbeam",
  "crossterm",
  "ratatui",
  "serde",

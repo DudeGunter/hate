@@ -9,6 +9,8 @@ shared.workspace = true
 # tui
 ratatui.workspace = true
 crossterm.workspace = true
+crossbeam.workspace = true
+chrono.workspace = true
 # networking
 serde.workspace = true
 aeronet.workspace = true
