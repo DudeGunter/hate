@@ -16,7 +16,7 @@ mod tui;
 pub fn plugin(app: &mut App) {
     app.add_plugins((
         LogPlugin {
-            custom_layer: tui::logging::custom_layer,
+            //custom_layer: tui::logging::custom_layer,
             filter: "duck_back=trace".to_string(),
             ..default()
         },
@@ -27,7 +27,7 @@ pub fn plugin(app: &mut App) {
         WebTransportServerPlugin,
         RepliconPlugins,
         AeronetRepliconServerPlugin,
-        tui::plugin,
+        //tui::plugin,
         control::plugin,
         shared::plugin,
         lobby::plugin,
