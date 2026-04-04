@@ -10,8 +10,9 @@ pub fn plugin(app: &mut App) {
     app.add_client_message::<PleaseGoTo>(Channel::Ordered);
     app.add_server_message::<GoTo>(Channel::Ordered);
 
-    app.add_client_message::<SelectGameScene>(Channel::Ordered);
-    app.add_server_message::<Response<SelectGameScene>>(Channel::Ordered);
+    app.add_client_message::<PleaseSelectGameScene>(Channel::Ordered);
+    app.add_server_message::<Response<PleaseSelectGameScene>>(Channel::Ordered);
+    app.add_server_message::<SelectGameScene>(Channel::Ordered);
 }
 
 /// Any client with this can have control authority over the server
@@ -29,16 +30,26 @@ pub struct PleaseGoTo(pub GameState);
 pub struct GoTo(pub GameState);
 
 // String path to scene asset
-#[derive(Resource, Reflect)]
+#[derive(Resource, Reflect, Default, DerefMut, Deref)]
 pub struct SelectedGameScene(Option<String>);
+
+impl SelectedGameScene {
+    pub fn select<S: Into<String>>(&mut self, string: S) {
+        self.0 = Some(string.into());
+    }
+}
 
 // Sent to server
 #[derive(Message, Serialize, Deserialize)]
 pub struct SelectGameScene(String);
 
+// Sent to server
 #[derive(Message, Serialize, Deserialize)]
-#[serde(bound = "")]
+pub struct PleaseSelectGameScene(String);
+
+#[derive(Message, Serialize, Deserialize)]
 pub enum Response<T> {
-    Success(PhantomData<T>),
-    Fail(PhantomData<T>),
+    Allowed,
+    Denied,
+    _Phantom(PhantomData<T>),
 }
