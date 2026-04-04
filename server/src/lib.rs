@@ -9,14 +9,17 @@ use shared::{
 use std::time::Duration;
 
 mod control;
+mod game;
 mod load;
 mod lobby;
+#[cfg(feature = "tui")]
 mod tui;
 
 pub fn plugin(app: &mut App) {
     app.add_plugins((
         LogPlugin {
-            //custom_layer: tui::logging::custom_layer,
+            #[cfg(feature = "tui")]
+            custom_layer: tui::logging::custom_layer,
             filter: "duck_back=trace".to_string(),
             ..default()
         },
@@ -27,11 +30,13 @@ pub fn plugin(app: &mut App) {
         WebTransportServerPlugin,
         RepliconPlugins,
         AeronetRepliconServerPlugin,
-        //tui::plugin,
+        #[cfg(feature = "tui")]
+        tui::plugin,
         control::plugin,
         shared::plugin,
         lobby::plugin,
         load::plugin,
+        game::plugin,
     ));
     app.insert_state(GameState::Loading);
     app.add_systems(Startup, open_web_transport_server);

@@ -7,6 +7,7 @@ use bevy_replicon::prelude::*;
 
 mod connect;
 mod control;
+mod game;
 mod host;
 mod lobby;
 mod main_menu;
@@ -28,6 +29,7 @@ pub fn plugin(app: &mut App) {
         lobby::plugin,
         shared::plugin,
         main_menu::plugin,
+        game::plugin,
     ));
     app.insert_state(shared::GameState::MainMenu);
     app.add_observer(host::start_server);
