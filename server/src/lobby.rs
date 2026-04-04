@@ -4,14 +4,12 @@ use bevy::{app::DynEq, prelude::*};
 use bevy_replicon::prelude::*;
 use shared::{
     GameState,
-    management::{ControlAuthority, GoTo, SelectedGameScene},
-    ownership::OwnedBy,
+    management::{ControlAuthority, GoTo, ownership::OwnedBy},
     player::*,
 };
 use std::time::SystemTime;
 
 pub fn plugin(app: &mut App) {
-    app.init_resource::<SelectedGameScene>();
     app.add_systems(OnEnter(GameState::Lobby), || {
         info!("Succesfully entered lobby.")
     });

@@ -2,17 +2,17 @@ use crate::GameState;
 use bevy::prelude::*;
 use bevy_replicon::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::marker::PhantomData;
+
+pub mod ownership;
+pub mod scene;
 
 pub fn plugin(app: &mut App) {
     app.replicate::<ControlAuthority>();
+    app.replicate::<scene::ReplicatedScenePath>();
+    app.replicate::<scene::GameScene>();
 
     app.add_client_message::<PleaseGoTo>(Channel::Ordered);
     app.add_server_message::<GoTo>(Channel::Ordered);
-
-    app.add_client_message::<PleaseSelectGameScene>(Channel::Ordered);
-    app.add_server_message::<Response<PleaseSelectGameScene>>(Channel::Ordered);
-    app.add_server_message::<SelectGameScene>(Channel::Ordered);
 }
 
 /// Any client with this can have control authority over the server
@@ -28,28 +28,3 @@ pub struct PleaseGoTo(pub GameState);
 /// which then relays this to all clients and the server
 #[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
 pub struct GoTo(pub GameState);
-
-// String path to scene asset
-#[derive(Resource, Reflect, Default, DerefMut, Deref)]
-pub struct SelectedGameScene(Option<String>);
-
-impl SelectedGameScene {
-    pub fn select<S: Into<String>>(&mut self, string: S) {
-        self.0 = Some(string.into());
-    }
-}
-
-// Sent to server
-#[derive(Message, Serialize, Deserialize)]
-pub struct SelectGameScene(String);
-
-// Sent to server
-#[derive(Message, Serialize, Deserialize)]
-pub struct PleaseSelectGameScene(String);
-
-#[derive(Message, Serialize, Deserialize)]
-pub enum Response<T> {
-    Allowed,
-    Denied,
-    _Phantom(PhantomData<T>),
-}

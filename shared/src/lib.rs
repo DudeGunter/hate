@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 
 pub mod consts;
 pub mod management;
-pub mod ownership;
 pub mod player;
 
 pub fn plugin(app: &mut App) {

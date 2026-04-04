@@ -17,7 +17,7 @@
 //!             ))
 //!             .id();
 //!         commands
-//!             .entity(player_id)
+//!             .entity(player_id) // The important part
 //!             .add_one_related::<OwnedBy>(color_display);
 //!         commands.entity(*display).add_child(color_display);
 //!     }
