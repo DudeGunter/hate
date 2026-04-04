@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
     GameState,
-    control::PleaseGoTo,
+    management::PleaseGoTo,
     player::{Player, PlayerColor, PlayerColorDisplay},
 };
 

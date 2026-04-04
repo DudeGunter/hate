@@ -4,7 +4,7 @@ use bevy::{app::DynEq, prelude::*};
 use bevy_replicon::prelude::*;
 use shared::{
     GameState,
-    control::{ControlAuthority, GoTo},
+    management::{ControlAuthority, GoTo},
     ownership::OwnedBy,
     player::*,
 };

@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use shared::{GameState, control::GoTo};
+use shared::{GameState, management::GoTo};
 
 pub fn plugin(app: &mut App) {
     app.add_systems(Update, recieve_goto);

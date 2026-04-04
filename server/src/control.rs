@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_replicon::prelude::*;
 use shared::{
     GameState,
-    control::{ControlAuthority, GoTo, PleaseGoTo},
+    management::{ControlAuthority, GoTo, PleaseGoTo},
 };
 
 pub fn plugin(app: &mut App) {
