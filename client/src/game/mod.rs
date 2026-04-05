@@ -14,4 +14,11 @@ pub fn plugin(app: &mut App) {
         Update,
         load::wait_on_server_and_others.run_if(in_state(GameState::WaitingOnOthers)),
     );
+
+    app.add_systems(OnEnter(GameState::Playing), say_hi);
+}
+
+pub fn say_hi(mut commands: Commands) {
+    info!("We have entered the main game state...");
+    commands.spawn((Camera2d, Text::new("hello")));
 }

@@ -38,7 +38,7 @@ pub fn check_please_load_scenes(
                 S::Loaded => {
                     commands.entity(entity).remove::<PleaseLoad>();
                 }
-                S::Loading => {}
+                S::Loading => {} // keep this out here because there could be application and I want to be reminded
                 S::NotLoaded => {}
                 S::Failed(error) => {
                     error!("Failed to load scene: {}", error);

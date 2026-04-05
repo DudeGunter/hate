@@ -7,6 +7,7 @@ pub fn plugin(app: &mut App) {
 
 pub fn recieve_goto(mut goto: MessageReader<GoTo>, mut game_state: ResMut<NextState<AppState>>) {
     for state in goto.read() {
+        info!("Going to state {:?}", state.0);
         game_state.set(state.0);
     }
 }

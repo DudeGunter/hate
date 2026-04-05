@@ -1,8 +1,10 @@
 use bevy::prelude::*;
-use bevy_replicon::prelude::{FromClient, Replicated};
+use bevy_replicon::prelude::{FromClient, Replicated, SendMode, ToClients};
 use shared::{
-    GameState,
-    management::scene::{FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath},
+    AppState, GameState,
+    management::scene::{
+        AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath,
+    },
     player::PlayerColor,
 };
 
@@ -12,10 +14,7 @@ pub fn plugin(app: &mut App) {
         OnEnter(GameState::Loading),
         spawn_replicated_scene_reference,
     );
-    app.add_systems(
-        Update,
-        wait_on_response.run_if(in_state(GameState::Loading)),
-    );
+    app.add_systems(Update, wait_on_response.run_if(in_state(AppState::InGame)));
 }
 
 pub fn spawn_replicated_scene_reference(mut commands: Commands) {
@@ -33,6 +32,7 @@ pub fn spawn_replicated_scene_reference(mut commands: Commands) {
 pub fn wait_on_response(
     mut next_state: ResMut<NextState<GameState>>,
     mut messages: MessageReader<FromClient<FinishedLoading>>,
+    mut write_finished: MessageWriter<ToClients<AllFinishedLoading>>,
     clients: Query<Entity, With<PlayerColor>>,
     mut n_messages_received: Local<usize>,
 ) {
@@ -41,7 +41,12 @@ pub fn wait_on_response(
     }
 
     if *n_messages_received == clients.count() {
+        info!("All clients loaded! Starting game...");
         // we skip the waiting on others state because it functionally doesn't matter in this context
         next_state.set(GameState::Playing);
+        write_finished.write(ToClients {
+            mode: SendMode::Broadcast,
+            message: AllFinishedLoading,
+        });
     }
 }
