@@ -1,15 +1,47 @@
 use bevy::prelude::*;
-use bevy_replicon::prelude::Replicated;
-use shared::{PlayingState, management::scene::ReplicatedScenePath};
+use bevy_replicon::prelude::{FromClient, Replicated};
+use shared::{
+    GameState,
+    management::scene::{FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath},
+    player::PlayerColor,
+};
 
 pub fn plugin(app: &mut App) {
-    app.add_sub_state::<PlayingState>();
+    app.add_sub_state::<GameState>();
     app.add_systems(
-        OnEnter(PlayingState::Loading),
+        OnEnter(GameState::Loading),
         spawn_replicated_scene_reference,
+    );
+    app.add_systems(
+        Update,
+        wait_on_response.run_if(in_state(GameState::Loading)),
     );
 }
 
 pub fn spawn_replicated_scene_reference(mut commands: Commands) {
-    commands.spawn((Replicated, ReplicatedScenePath("".to_string())));
+    commands.spawn((
+        Replicated,
+        GameScene,
+        // this is replicated once. it tell the client to not continue unless the scene is fully loaded
+        PleaseLoad,
+        // Which scene to replicate should be defined in the lobby probably.
+        // why component? easy replication and multiple scenes *should* be possible
+        ReplicatedScenePath("".to_string()),
+    ));
+}
+
+pub fn wait_on_response(
+    mut next_state: ResMut<NextState<GameState>>,
+    mut messages: MessageReader<FromClient<FinishedLoading>>,
+    clients: Query<Entity, With<PlayerColor>>,
+    mut n_messages_received: Local<usize>,
+) {
+    for _message in messages.read() {
+        *n_messages_received += 1;
+    }
+
+    if *n_messages_received == clients.count() {
+        // we skip the waiting on others state because it functionally doesn't matter in this context
+        next_state.set(GameState::Playing);
+    }
 }

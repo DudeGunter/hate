@@ -2,13 +2,13 @@ use crate::main_menu::{text, trigger_event_on_button_pressed};
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
-    GameState,
+    AppState,
     management::PleaseGoTo,
     player::{Player, PlayerColor, PlayerColorDisplay},
 };
 
 pub fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(GameState::Lobby), (spawn_lobby, spawn_ui));
+    app.add_systems(OnEnter(AppState::Lobby), (spawn_lobby, spawn_ui));
     app.add_systems(
         Update,
         (
@@ -16,24 +16,20 @@ pub fn plugin(app: &mut App) {
             handle_player_color_display,
             trigger_event_on_button_pressed::<StartGame>,
         )
-            .run_if(in_state(GameState::Lobby)),
+            .run_if(in_state(AppState::Lobby)),
     );
     app.add_observer(start_game);
 }
 
 pub fn spawn_lobby(mut commands: Commands) {
-    commands.spawn((
-        Camera2d,
-        PrimaryEguiContext,
-        DespawnOnExit(GameState::Lobby),
-    ));
+    commands.spawn((Camera2d, PrimaryEguiContext, DespawnOnExit(AppState::Lobby)));
 }
 
 pub fn spawn_ui(mut commands: Commands) {
-    commands.spawn((DespawnOnExit(GameState::Lobby), PlayerCount));
+    commands.spawn((DespawnOnExit(AppState::Lobby), PlayerCount));
 
     commands.spawn((
-        DespawnOnExit(GameState::Lobby),
+        DespawnOnExit(AppState::Lobby),
         Node {
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
@@ -47,7 +43,7 @@ pub fn spawn_ui(mut commands: Commands) {
 
     commands.spawn((
         Name::new("PlayerColorDisplayContainer"),
-        DespawnOnExit(GameState::Lobby),
+        DespawnOnExit(AppState::Lobby),
         PlayerColorDisplayContainer,
         ZIndex(-1),
         Node {
@@ -67,7 +63,7 @@ pub struct StartGame;
 
 pub fn start_game(_trigger: On<StartGame>, mut goto: MessageWriter<PleaseGoTo>) {
     info!("Sending GoTo(GameState::Playing) to server.");
-    goto.write(PleaseGoTo(GameState::Playing));
+    goto.write(PleaseGoTo(AppState::InGame));
 }
 
 #[derive(Component, Reflect)]

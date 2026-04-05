@@ -3,7 +3,7 @@ use aeronet_webtransport::{cert, server::*, wtransport};
 use bevy::{app::ScheduleRunnerPlugin, log::LogPlugin, prelude::*, state::app::StatesPlugin};
 use bevy_replicon::prelude::*;
 use shared::{
-    GameState,
+    AppState,
     consts::{SERVER_PORT, TICK_RATE},
 };
 use std::time::Duration;
@@ -38,7 +38,7 @@ pub fn plugin(app: &mut App) {
         load::plugin,
         game::plugin,
     ));
-    app.insert_state(GameState::Loading);
+    app.insert_state(AppState::Loading);
     app.add_systems(Startup, open_web_transport_server);
 }
 

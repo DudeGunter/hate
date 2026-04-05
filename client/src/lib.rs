@@ -31,7 +31,7 @@ pub fn plugin(app: &mut App) {
         main_menu::plugin,
         game::plugin,
     ));
-    app.insert_state(shared::GameState::MainMenu);
+    app.insert_state(shared::AppState::MainMenu);
     app.add_observer(host::start_server);
     app.add_observer(connect::connect_client);
     app.add_observer(connect::on_connecting);

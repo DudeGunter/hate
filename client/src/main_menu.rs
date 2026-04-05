@@ -1,24 +1,24 @@
 use crate::{connect::ConnectClient, host::StartHostServer};
 use bevy::prelude::*;
-use shared::GameState;
+use shared::AppState;
 
 pub fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(GameState::MainMenu), spawn_ui);
+    app.add_systems(OnEnter(AppState::MainMenu), spawn_ui);
     app.add_systems(
         Update,
         (
             trigger_event_on_button_pressed::<StartHostServer>,
             trigger_event_on_button_pressed::<ConnectClient>,
         )
-            .run_if(in_state(GameState::MainMenu)),
+            .run_if(in_state(AppState::MainMenu)),
     );
 }
 
 pub fn spawn_ui(mut commands: Commands) {
-    commands.spawn((DespawnOnExit(GameState::MainMenu), Camera2d::default()));
+    commands.spawn((DespawnOnExit(AppState::MainMenu), Camera2d::default()));
 
     commands.spawn((
-        DespawnOnExit(GameState::MainMenu),
+        DespawnOnExit(AppState::MainMenu),
         Node {
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,

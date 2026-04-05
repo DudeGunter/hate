@@ -1,4 +1,4 @@
-use crate::GameState;
+use crate::AppState;
 use bevy::prelude::*;
 use bevy_replicon::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -10,6 +10,10 @@ pub fn plugin(app: &mut App) {
     app.replicate::<ControlAuthority>();
     app.replicate::<scene::ReplicatedScenePath>();
     app.replicate::<scene::GameScene>();
+    app.replicate_once::<scene::PleaseLoad>();
+
+    app.add_client_message::<scene::FinishedLoading>(Channel::Unordered);
+    app.add_server_message::<scene::AllFinishedLoading>(Channel::Unordered);
 
     app.add_client_message::<PleaseGoTo>(Channel::Ordered);
     app.add_server_message::<GoTo>(Channel::Ordered);
@@ -22,9 +26,9 @@ pub struct ControlAuthority;
 /// A client with ```ControlAuthority``` can send this to the server,
 /// which is then relayed to all clients and the server as ```GoTo```
 #[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
-pub struct PleaseGoTo(pub GameState);
+pub struct PleaseGoTo(pub AppState);
 
 /// A client with ```ControlAuthority``` can send ```PleaseGoTo``` to the server,
 /// which then relays this to all clients and the server
 #[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
-pub struct GoTo(pub GameState);
+pub struct GoTo(pub AppState);

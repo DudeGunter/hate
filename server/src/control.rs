@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_replicon::prelude::*;
 use shared::{
-    GameState,
+    AppState,
     management::{ControlAuthority, GoTo, PleaseGoTo},
 };
 
@@ -12,7 +12,7 @@ pub fn plugin(app: &mut App) {
 pub fn relay_client_authoritive_goto_gamestate_message(
     mut from_clients: MessageReader<FromClient<PleaseGoTo>>,
     mut to_clients: MessageWriter<ToClients<GoTo>>,
-    mut next_game_state: ResMut<NextState<GameState>>,
+    mut next_game_state: ResMut<NextState<AppState>>,
     has_control: Query<Entity, With<ControlAuthority>>,
 ) {
     for message in from_clients.read() {
@@ -21,7 +21,7 @@ pub fn relay_client_authoritive_goto_gamestate_message(
             && has_control.contains(from)
         {
             info!("Client has authority! relaying and setting game state.");
-            next_game_state.set(GameState::Playing);
+            next_game_state.set(AppState::InGame);
 
             to_clients.write(ToClients {
                 mode: SendMode::Broadcast,

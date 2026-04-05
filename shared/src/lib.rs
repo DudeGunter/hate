@@ -11,16 +11,16 @@ pub fn plugin(app: &mut App) {
 
 // client and server insert the state independently
 #[derive(States, Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum GameState {
+pub enum AppState {
     MainMenu,
     Loading,
     Lobby,
-    Playing,
+    InGame,
 }
 
 #[derive(SubStates, Default, Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[source(GameState = GameState::Playing)]
-pub enum PlayingState {
+#[source(AppState = AppState::InGame)]
+pub enum GameState {
     #[default]
     Loading,
     WaitingOnOthers,

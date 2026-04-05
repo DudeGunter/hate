@@ -3,14 +3,14 @@ use aeronet_webtransport::server::*;
 use bevy::{app::DynEq, prelude::*};
 use bevy_replicon::prelude::*;
 use shared::{
-    GameState,
+    AppState,
     management::{ControlAuthority, GoTo, ownership::OwnedBy},
     player::*,
 };
 use std::time::SystemTime;
 
 pub fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(GameState::Lobby), || {
+    app.add_systems(OnEnter(AppState::Lobby), || {
         info!("Succesfully entered lobby.")
     });
     app.add_observer(on_connected);
@@ -20,7 +20,7 @@ pub fn plugin(app: &mut App) {
 fn on_session_request(
     mut request: On<SessionRequest>,
     clients: Query<&ChildOf>,
-    current_game_state: Res<State<GameState>>,
+    current_game_state: Res<State<AppState>>,
 ) {
     let client = request.event_target();
     let Ok(&ChildOf(server)) = clients.get(client) else {
@@ -32,7 +32,7 @@ fn on_session_request(
         info!("  {header_key}: {header_value}");
     }
     match current_game_state.get() {
-        GameState::Lobby => request.respond(SessionResponse::Accepted),
+        AppState::Lobby => request.respond(SessionResponse::Accepted),
         _ => request.respond(SessionResponse::Forbidden),
     }
 }
@@ -42,10 +42,10 @@ pub fn on_connected(
     clients: Query<&ChildOf>,
     mut commands: Commands,
     mut goto: MessageWriter<ToClients<GoTo>>,
-    current_game_state: Res<State<GameState>>,
+    current_game_state: Res<State<AppState>>,
 ) {
     // Only accept if in lobby
-    if !current_game_state.get().dyn_eq(&GameState::Lobby) {
+    if !current_game_state.get().dyn_eq(&AppState::Lobby) {
         return;
     }
 
@@ -77,6 +77,6 @@ pub fn on_connected(
 
     goto.write(ToClients {
         mode: SendMode::Direct(ClientId::Client(client)),
-        message: GoTo(GameState::Lobby),
+        message: GoTo(AppState::Lobby),
     });
 }
