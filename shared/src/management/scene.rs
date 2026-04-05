@@ -1,6 +1,12 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
+// todo! make this logic more generalized for diverse assets
+// OR keep as is and encapsulate everything with
+// a unified scene asset which describes and containerizes
+// other assets.
+// Much to think about
+
 /// Created on server and sent to clients
 /// The string is a path which exists on all clients
 ///

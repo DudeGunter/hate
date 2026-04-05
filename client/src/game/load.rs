@@ -23,6 +23,7 @@ pub fn manage_replicated_scene(
     }
 }
 
+// WARNING!!! this logic is pretty much untested
 pub fn check_please_load_scenes(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
