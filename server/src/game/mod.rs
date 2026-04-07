@@ -40,6 +40,7 @@ pub fn wait_on_response(
     mut n_messages_received: Local<usize>,
 ) {
     for _message in messages.read() {
+        info!("A client finished loading all their scene!");
         *n_messages_received += 1;
     }
 

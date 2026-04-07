@@ -67,7 +67,12 @@ pub fn on_connected(
     let color = Color::srgb_u8((time * 3) as u8, (time * 5) as u8, (time * 7) as u8);
 
     let lobby_display = commands
-        .spawn((PlayerColorDisplay, PlayerColor(color), Replicated))
+        .spawn((
+            PlayerColorDisplay,
+            PlayerColor(color),
+            DespawnOnExit(AppState::Lobby),
+            Replicated,
+        ))
         .id();
 
     commands
