@@ -1,11 +1,11 @@
+use aeronet::io::Session;
 use bevy::prelude::*;
 use bevy_replicon::prelude::{FromClient, Replicated, SendMode, ToClients};
 use shared::{
-    AppState, GameState,
+    GameState,
     management::scene::{
         AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath,
     },
-    player::PlayerColor,
 };
 
 pub fn plugin(app: &mut App) {
@@ -36,7 +36,7 @@ pub fn wait_on_response(
     mut next_state: ResMut<NextState<GameState>>,
     mut messages: MessageReader<FromClient<FinishedLoading>>,
     mut write_finished: MessageWriter<ToClients<AllFinishedLoading>>,
-    clients: Query<Entity, With<PlayerColor>>,
+    clients: Query<Entity, With<Session>>,
     mut n_messages_received: Local<usize>,
 ) {
     for _message in messages.read() {
