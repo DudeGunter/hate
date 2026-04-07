@@ -14,7 +14,10 @@ pub fn plugin(app: &mut App) {
         OnEnter(GameState::Loading),
         spawn_replicated_scene_reference,
     );
-    app.add_systems(Update, wait_on_response.run_if(in_state(AppState::InGame)));
+    app.add_systems(
+        Update,
+        wait_on_response.run_if(in_state(GameState::Loading)),
+    );
 }
 
 pub fn spawn_replicated_scene_reference(mut commands: Commands) {

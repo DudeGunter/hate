@@ -49,6 +49,7 @@ pub fn check_please_load_scenes(
     // if there are no assets to load,
     if scenes.count() == 0 {
         // Tell the server I'm ready and wait on the others/go to waiting state
+        info!("Finished loading all required assets, telling server and waiting for others.");
         finished_loading.write(FinishedLoading);
         next_state.set(GameState::WaitingOnOthers);
     }
@@ -59,6 +60,7 @@ pub fn wait_on_server_and_others(
     message: MessageReader<AllFinishedLoading>,
 ) {
     if !message.is_empty() {
+        info!("All clients finished loading, moving to playing state.");
         next_state.set(GameState::Playing);
     }
 }

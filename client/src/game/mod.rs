@@ -1,11 +1,12 @@
 use bevy::prelude::*;
-use shared::GameState;
+use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
+use shared::{AppState, GameState};
 
 mod load;
 
 pub fn plugin(app: &mut App) {
     app.add_sub_state::<GameState>();
-    app.add_systems(OnEnter(GameState::Loading), load::manage_replicated_scene);
+    app.add_systems(OnEnter(AppState::InGame), load::manage_replicated_scene);
     app.add_systems(
         Update,
         load::check_please_load_scenes.run_if(in_state(GameState::Loading)),
@@ -20,5 +21,5 @@ pub fn plugin(app: &mut App) {
 
 pub fn say_hi(mut commands: Commands) {
     info!("We have entered the main game state...");
-    commands.spawn((Camera2d, Text::new("hello")));
+    commands.spawn((Camera2d, Text::new("hello"), PrimaryEguiContext));
 }
