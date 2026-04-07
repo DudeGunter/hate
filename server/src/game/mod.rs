@@ -40,8 +40,12 @@ pub fn wait_on_response(
     mut n_messages_received: Local<usize>,
 ) {
     for _message in messages.read() {
-        info!("A client finished loading all their scene!");
         *n_messages_received += 1;
+        info!(
+            "A client has finished loading game assets... {}/{} are ready.",
+            *n_messages_received,
+            clients.count()
+        );
     }
 
     if *n_messages_received == clients.count() {

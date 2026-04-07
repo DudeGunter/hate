@@ -30,27 +30,3 @@ pub fn relay_client_authoritive_goto_gamestate_message(
         }
     }
 }
-
-/*
-pub fn relay_client_authoritive_message<
-    'a,
-    M: Message + Serialize + Deserialize<'a> + Clone + std::fmt::Debug,
->(
-    mut from_clients: MessageReader<FromClient<M>>,
-    mut to_clients: MessageWriter<ToClients<M>>,
-    has_control: Query<Entity, With<ControlAuthority>>,
-) {
-    for message in from_clients.read() {
-        info!("Recieved message from client... attempting to relay.");
-        if let Some(from) = message.client_id.entity()
-            && has_control.contains(from)
-        {
-            info!("Relaying message {:?}", message.message);
-            to_clients.write(ToClients {
-                mode: SendMode::Broadcast,
-                message: message.message.clone(),
-            });
-        }
-    }
-}
-*/
