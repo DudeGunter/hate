@@ -9,9 +9,8 @@ use std::{
 #[derive(Event, Component, Clone)]
 pub struct StartHostServer;
 
-#[allow(unused)]
-#[derive(Component)]
-pub struct Host(pub Child);
+#[derive(Resource, Deref, DerefMut)]
+pub struct Host(Child);
 
 // Kill server when host is dropped
 // It shouldn't be done like this,
@@ -37,7 +36,13 @@ pub fn start_server(_on: On<StartHostServer>, mut commands: Commands) {
             let reader = BufReader::new(stderr);
             for line in reader.lines() {
                 match line {
-                    Ok(l) => simple!("[server] {}", l),
+                    Ok(line) => {
+                        let clean = match line.rfind("\x1b[0m") {
+                            Some(pos) => line[pos + 4..].trim_start(),
+                            None => line.trim_start(),
+                        };
+                        simple!("[server] {}", clean);
+                    }
                     Err(e) => simple!("[server error] {}", e),
                 }
             }
@@ -59,5 +64,9 @@ pub fn start_server(_on: On<StartHostServer>, mut commands: Commands) {
     // When host is despawned the server is killed.
     // This should be handled in a different way
     // A client needs control and comms over server
-    commands.spawn(Host(child));
+    commands.insert_resource(Host(child));
+}
+
+pub fn force_kill_server(mut host: ResMut<Host>) {
+    let _ = host.kill();
 }

@@ -18,6 +18,12 @@ pub fn manage_replicated_scene(
         entity_cmds.remove::<PleaseLoad>();
         continue;
         // Buisness as usual after this
+        // I think I've mentioned this somewhere else in the docs probably.
+        // This should instead of being a path to one scene, be a collection of
+        // assets or have it be just a folder describing the level.
+        // The folder could then have a desc.toml or something.
+        // If the asset fails to load, tell the server and ask for web link.
+        // Aka https://....zip
         let potential_scene: Handle<Scene> = asset_server.load(path.0.clone());
         entity_cmds.insert(SceneRoot(potential_scene));
     }

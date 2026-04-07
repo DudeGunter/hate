@@ -36,7 +36,7 @@ crossbeam = "0.8"
 chrono = "0.4"
 # error handling
 duck_back = "1.0"
-# Crates within the project
+# crates within the project
 server.path = "server"
 client.path = "client"
 shared.path = "shared"
