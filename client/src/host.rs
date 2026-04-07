@@ -54,7 +54,6 @@ pub fn start_server(_on: On<StartHostServer>, mut commands: Commands) {
                             None => line.trim_start(),
                         };
                         if line.find(LET_HOST_KNOW_KEY).is_some() {
-                            info!("We're able to connect now... trying to let world know.");
                             cloned_lobby_open.store(true, Ordering::Relaxed);
                         }
                         simple!("[server] {}", clean);
