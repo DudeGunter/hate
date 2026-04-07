@@ -49,14 +49,15 @@ pub fn start_server(_on: On<StartHostServer>, mut commands: Commands) {
             for line in reader.lines() {
                 match line {
                     Ok(line) => {
-                        let clean = match line.rfind("\x1b[0m") {
-                            Some(pos) => line[pos + 4..].trim_start(),
-                            None => line.trim_start(),
-                        };
                         if line.find(LET_HOST_KNOW_KEY).is_some() {
                             cloned_lobby_open.store(true, Ordering::Relaxed);
+                        } else {
+                            let clean = match line.rfind("\x1b[0m") {
+                                Some(pos) => line[pos + 4..].trim_start(),
+                                None => line.trim_start(),
+                            };
+                            info!("[server] {}", clean);
                         }
-                        simple!("[server] {}", clean);
                     }
                     Err(e) => simple!("[server error] {}", e),
                 }
