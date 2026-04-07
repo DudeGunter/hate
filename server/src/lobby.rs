@@ -4,6 +4,7 @@ use bevy::{app::DynEq, prelude::*};
 use bevy_replicon::prelude::*;
 use shared::{
     AppState,
+    consts::LET_HOST_KNOW_KEY,
     management::{ControlAuthority, GoTo, ownership::OwnedBy},
     player::*,
 };
@@ -11,7 +12,8 @@ use std::time::SystemTime;
 
 pub fn plugin(app: &mut App) {
     app.add_systems(OnEnter(AppState::Lobby), || {
-        info!("Succesfully entered lobby.")
+        info!("Successfully entered lobby.");
+        info!("{}", LET_HOST_KNOW_KEY);
     });
     app.add_observer(on_connected);
     app.add_observer(on_session_request);

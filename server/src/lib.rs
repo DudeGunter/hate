@@ -1,3 +1,4 @@
+use aeronet::io::server::Server;
 use aeronet_replicon::server::{AeronetRepliconServer, AeronetRepliconServerPlugin};
 use aeronet_webtransport::{cert, server::*, wtransport};
 use bevy::{app::ScheduleRunnerPlugin, log::LogPlugin, prelude::*, state::app::StatesPlugin};
@@ -10,7 +11,6 @@ use std::time::Duration;
 
 mod control;
 mod game;
-mod load;
 mod lobby;
 #[cfg(feature = "tui")]
 mod tui;
@@ -35,11 +35,11 @@ pub fn plugin(app: &mut App) {
         control::plugin,
         shared::plugin,
         lobby::plugin,
-        load::plugin,
         game::plugin,
     ));
     app.insert_state(AppState::Loading);
     app.add_systems(Startup, open_web_transport_server);
+    app.add_observer(go_to_lobby);
 }
 
 fn open_web_transport_server(mut commands: Commands) {
@@ -74,4 +74,8 @@ fn open_web_transport_server(mut commands: Commands) {
         .queue(WebTransportServer::open(config))
         .id();
     info!("Opening WebTransport server {server}");
+}
+
+pub fn go_to_lobby(_trigger: On<Add, Server>, mut next_state: ResMut<NextState<AppState>>) {
+    next_state.set(AppState::Lobby);
 }

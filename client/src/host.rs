@@ -1,37 +1,49 @@
-use bevy::{prelude::*, tasks::AsyncComputeTaskPool};
+use bevy::{prelude::*, tasks::IoTaskPool};
 use bevy_console::prelude::*;
 use duck_back::Else;
+use shared::consts::LET_HOST_KNOW_KEY;
 use std::{
     io::{BufRead, BufReader},
     process::{Child, Command, Stdio},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
 };
+
+use crate::connect::ConnectClient;
+
+pub fn plugin(app: &mut App) {
+    app.add_observer(start_server);
+    app.add_systems(Update, watch_for_lobby_bool);
+    app.add_systems(Last, force_kill_server.run_if(on_message::<AppExit>));
+}
 
 #[derive(Event, Component, Clone)]
 pub struct StartHostServer;
 
-#[derive(Resource, Deref, DerefMut)]
-pub struct Host(Child);
-
-// Kill server when host is dropped
-// It shouldn't be done like this,
-// I have this so when client crashes, server doesn't run without me knowing
-impl Drop for Host {
-    fn drop(&mut self) {
-        let _ = self.0.kill();
-    }
+#[derive(Component)]
+pub struct ServerProcess {
+    pub child: Child,
+    lobby_open: Arc<AtomicBool>,
 }
+
+#[derive(Component, Reflect)]
+pub struct LobbyOpen;
 
 pub fn start_server(_on: On<StartHostServer>, mut commands: Commands) {
     let mut child = Command::new("bevy")
         .args(["run", "--features", "server"])
-        .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
         .else_error()?;
 
+    let lobby_open = Arc::new(AtomicBool::new(false));
+    let cloned_lobby_open = lobby_open.clone();
+
     // Pipe server outputs
     let stderr = child.stderr.take().else_error()?;
-    AsyncComputeTaskPool::get()
+    IoTaskPool::get()
         .spawn(async move {
             let reader = BufReader::new(stderr);
             for line in reader.lines() {
@@ -41,20 +53,12 @@ pub fn start_server(_on: On<StartHostServer>, mut commands: Commands) {
                             Some(pos) => line[pos + 4..].trim_start(),
                             None => line.trim_start(),
                         };
+                        if line.find(LET_HOST_KNOW_KEY).is_some() {
+                            info!("We're able to connect now... trying to let world know.");
+                            cloned_lobby_open.store(true, Ordering::Relaxed);
+                        }
                         simple!("[server] {}", clean);
                     }
-                    Err(e) => simple!("[server error] {}", e),
-                }
-            }
-        })
-        .detach();
-    let stdout = child.stdout.take().else_error()?;
-    AsyncComputeTaskPool::get()
-        .spawn(async move {
-            let reader = BufReader::new(stdout);
-            for line in reader.lines() {
-                match line {
-                    Ok(l) => simple!("[server] {}", l),
                     Err(e) => simple!("[server error] {}", e),
                 }
             }
@@ -64,9 +68,20 @@ pub fn start_server(_on: On<StartHostServer>, mut commands: Commands) {
     // When host is despawned the server is killed.
     // This should be handled in a different way
     // A client needs control and comms over server
-    commands.insert_resource(Host(child));
+    commands.spawn(ServerProcess { child, lobby_open });
 }
 
-pub fn force_kill_server(mut host: ResMut<Host>) {
-    let _ = host.kill();
+pub fn watch_for_lobby_bool(
+    mut commands: Commands,
+    host: Single<(Entity, &ServerProcess), Without<LobbyOpen>>,
+) {
+    let (entity, process) = *host;
+    if process.lobby_open.load(Ordering::Relaxed) {
+        commands.entity(entity).insert(LobbyOpen);
+        commands.trigger(ConnectClient);
+    }
+}
+
+pub fn force_kill_server(mut host: Single<&mut ServerProcess>) {
+    let _ = host.child.kill();
 }

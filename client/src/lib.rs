@@ -30,10 +30,9 @@ pub fn plugin(app: &mut App) {
         shared::plugin,
         main_menu::plugin,
         game::plugin,
+        host::plugin,
     ));
     app.insert_state(shared::AppState::MainMenu);
-    app.add_observer(host::start_server);
-    app.add_systems(Last, host::force_kill_server.run_if(on_message::<AppExit>));
     app.add_observer(connect::connect_client);
     app.add_observer(connect::on_connecting);
     app.add_observer(connect::on_connected);
