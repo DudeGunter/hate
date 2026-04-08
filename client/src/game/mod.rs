@@ -3,9 +3,11 @@ use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{AppState, GameState};
 
 mod load;
+mod logic;
 
 pub fn plugin(app: &mut App) {
     app.add_sub_state::<GameState>();
+    app.add_plugins(logic::plugin);
     app.add_systems(OnEnter(AppState::InGame), load::manage_replicated_scene);
     app.add_systems(
         Update,
