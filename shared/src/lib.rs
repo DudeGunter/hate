@@ -7,7 +7,7 @@ pub mod physics;
 pub mod player;
 
 pub fn plugin(app: &mut App) {
-    app.add_plugins((player::plugin, management::plugin));
+    app.add_plugins((player::plugin, management::plugin, physics::plugin));
 }
 
 // client and server insert the state independently
