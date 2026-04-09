@@ -29,6 +29,8 @@ aeronet = "0.19"
 aeronet_webtransport = { version = "0.19", features = ["dangerous-configuration"] }
 aeronet_replicon = "0.19"
 bevy_replicon = "0.38"
+# physics
+avian3d = { version = "0.6", features = ["serialize"] }
 # server tui
 ratatui = "0.30.0"
 crossterm = "0.29.0"

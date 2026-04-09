@@ -1,6 +1,7 @@
 use aeronet::io::server::Server;
 use aeronet_replicon::server::{AeronetRepliconServer, AeronetRepliconServerPlugin};
 use aeronet_webtransport::{cert, server::*, wtransport};
+use avian3d::prelude::*;
 use bevy::{app::ScheduleRunnerPlugin, log::LogPlugin, prelude::*, state::app::StatesPlugin};
 use bevy_replicon::prelude::*;
 use shared::{
@@ -30,6 +31,10 @@ pub fn plugin(app: &mut App) {
         WebTransportServerPlugin,
         RepliconPlugins,
         AeronetRepliconServerPlugin,
+        PhysicsPlugins::new(FixedPostUpdate)
+            .build()
+            .disable::<PhysicsTransformPlugin>(),
+        PhysicsTransformPlugin::new(PostUpdate),
         #[cfg(feature = "tui")]
         tui::plugin,
         control::plugin,

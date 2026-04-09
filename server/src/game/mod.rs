@@ -1,4 +1,5 @@
 use aeronet::io::Session;
+use avian3d::prelude::*;
 use bevy::prelude::*;
 use bevy_replicon::prelude::{FromClient, Replicated, SendMode, ToClients};
 use shared::{
@@ -7,7 +8,7 @@ use shared::{
         ownership::OwnedBy,
         scene::{AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath},
     },
-    player::{Player, Position},
+    player::Player,
 };
 
 pub fn plugin(app: &mut App) {
@@ -34,7 +35,12 @@ pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With
     commands.insert_resource(GameLoaded(true));
     for entity in sessions {
         let character = commands
-            .spawn((Player, Position(Vec2::ZERO), Replicated))
+            .spawn((
+                Player,
+                RigidBody::Dynamic,
+                Collider::cylinder(0.5, 1.0),
+                Replicated,
+            ))
             .id();
         commands
             .entity(entity)
@@ -42,15 +48,15 @@ pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With
     }
 }
 
-pub fn randomly_change_positions(player_positions: Query<&mut Position, With<Player>>) {
-    for mut position in player_positions {
+pub fn randomly_change_positions(player_velocities: Query<&mut LinearVelocity, With<Player>>) {
+    for mut velocity in player_velocities {
         let seed = std::time::SystemTime::now()
             .duration_since(std::time::UNIX_EPOCH)
             .unwrap()
             .subsec_nanos();
         match seed % 2 {
-            0 => position.0.x += 1.0,
-            _ => position.0.x -= 1.0,
+            0 => velocity.x += 1.0,
+            _ => velocity.x -= 1.0,
         }
     }
 }

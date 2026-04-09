@@ -23,5 +23,10 @@ pub fn plugin(app: &mut App) {
 
 pub fn say_hi(mut commands: Commands) {
     info!("We have entered the main game state...");
-    commands.spawn((Camera2d, Text::new("hello"), PrimaryEguiContext));
+    commands.spawn((
+        Camera3d::default(),
+        Transform::from_xyz(0.0, 10.0, 0.0).looking_at(Vec3::ZERO, Vec3::Y),
+        Text::new("hello"),
+        PrimaryEguiContext,
+    ));
 }

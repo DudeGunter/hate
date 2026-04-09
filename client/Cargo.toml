@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 bevy = { workspace = true, features = ["3d"] }
 shared.workspace = true
+avian3d.workspace = true
 bevy_console.workspace = true
 bevy-inspector-egui.workspace = true
 duck_back.workspace = true

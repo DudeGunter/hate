@@ -9,6 +9,7 @@ tui = ["ratatui", "crossterm", "crossbeam", "chrono"]
 [dependencies]
 bevy.workspace = true
 shared.workspace = true
+avian3d.workspace = true
 # tui
 ratatui = { workspace = true, optional = true}
 crossterm = { workspace = true, optional = true}
