@@ -1,3 +1,4 @@
+use avian3d::prelude::TransformInterpolation;
 use bevy::prelude::*;
 use shared::player::{Player, PlayerColor};
 
@@ -14,6 +15,7 @@ pub fn on_add_player(
 ) {
     let color = colors.get(trigger.entity).unwrap().0;
     commands.entity(trigger.entity).insert((
+        TransformInterpolation,
         Mesh3d(meshes.add(Cylinder::new(0.5, 1.0))),
         MeshMaterial3d(materials.add(StandardMaterial::from_color(color))),
     ));

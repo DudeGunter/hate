@@ -22,7 +22,7 @@ pub fn plugin(app: &mut App) {
         }),
         EguiPlugin::default(),
         WorldInspectorPlugin::new(),
-        ConsolePlugin,
+        //ConsolePlugin,
         WebTransportClientPlugin,
         RepliconPlugins,
         AeronetRepliconClientPlugin,
@@ -44,6 +44,6 @@ pub fn plugin(app: &mut App) {
     app.add_observer(connect::connect_client);
     app.add_observer(connect::on_connecting);
     app.add_observer(connect::on_connected);
-    app.add_command_event_named("start_host", host::StartHostServer);
-    app.add_command_event_named("connect", connect::ConnectClient);
+    //app.add_command_event_named("start_host", host::StartHostServer);
+    //app.add_command_event_named("connect", connect::ConnectClient);
 }

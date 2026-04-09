@@ -2,7 +2,10 @@ use aeronet::io::server::Server;
 use aeronet_replicon::server::{AeronetRepliconServer, AeronetRepliconServerPlugin};
 use aeronet_webtransport::{cert, server::*, wtransport};
 use avian3d::prelude::*;
-use bevy::{app::ScheduleRunnerPlugin, log::LogPlugin, prelude::*, state::app::StatesPlugin};
+use bevy::{
+    app::ScheduleRunnerPlugin, log::LogPlugin, mesh::MeshPlugin, prelude::*, scene::ScenePlugin,
+    state::app::StatesPlugin,
+};
 use bevy_replicon::prelude::*;
 use shared::{
     AppState,
@@ -27,6 +30,9 @@ pub fn plugin(app: &mut App) {
         MinimalPlugins.set(ScheduleRunnerPlugin::run_loop(Duration::from_secs_f64(
             1.0 / f64::from(TICK_RATE),
         ))),
+        AssetPlugin::default(),
+        MeshPlugin,
+        ScenePlugin,
         StatesPlugin,
         WebTransportServerPlugin,
         RepliconPlugins,
