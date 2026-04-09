@@ -7,6 +7,8 @@ pub mod ownership;
 pub mod scene;
 
 pub fn plugin(app: &mut App) {
+    app.replicate::<ownership::Owner>();
+
     app.replicate::<ControlAuthority>();
     app.replicate::<scene::ReplicatedScenePath>();
     app.replicate::<scene::GameScene>();

@@ -24,6 +24,7 @@
 //! }
 
 use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
 
 // linked_spawn makes the owned entities exist only if the owner exists.
 // Esentially, when the entity with ```Owns``` is despawned, all entities in the ```Vec<Entity>```
@@ -31,9 +32,9 @@ use bevy::prelude::*;
 // It is essentially a parent child relationship which doesn't move transforms or anything like that
 // and is purely meant for networking, although it could be applied in other contexts.
 #[derive(Component, Reflect)]
-#[relationship_target(relationship = OwnedBy, linked_spawn)]
+#[relationship_target(relationship = Owner, linked_spawn)]
 pub struct Owns(Vec<Entity>);
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Serialize, Deserialize)]
 #[relationship(relationship_target = Owns)]
-pub struct OwnedBy(pub Entity);
+pub struct Owner(#[entities] pub Entity);

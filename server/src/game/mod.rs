@@ -5,7 +5,7 @@ use bevy_replicon::prelude::{FromClient, Replicated, SendMode, ToClients};
 use shared::{
     GameState,
     management::{
-        ownership::OwnedBy,
+        ownership::Owner,
         scene::{AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath},
     },
     player::Player,
@@ -42,9 +42,7 @@ pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With
                 Replicated,
             ))
             .id();
-        commands
-            .entity(entity)
-            .add_one_related::<OwnedBy>(character);
+        commands.entity(entity).add_one_related::<Owner>(character);
     }
 }
 

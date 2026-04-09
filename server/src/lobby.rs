@@ -8,13 +8,13 @@ use bevy_replicon::prelude::*;
 use shared::{
     AppState,
     consts::LET_HOST_KNOW_KEY,
-    management::{ControlAuthority, GoTo, ownership::OwnedBy},
+    management::{ControlAuthority, GoTo, ownership::Owner},
     player::*,
 };
 use std::time::SystemTime;
 
 pub fn plugin(app: &mut App) {
-    app.add_plugins(HierarchyPropagatePlugin::<PlayerColor, (), OwnedBy>::new(
+    app.add_plugins(HierarchyPropagatePlugin::<PlayerColor, (), Owner>::new(
         Update,
     ));
     app.add_systems(OnEnter(AppState::Lobby), || {
@@ -85,7 +85,7 @@ pub fn on_connected(
     commands
         .entity(client)
         .insert((Propagate(PlayerColor(color)), ControlAuthority, Replicated))
-        .add_one_related::<OwnedBy>(lobby_display);
+        .add_one_related::<Owner>(lobby_display);
 
     goto.write(ToClients {
         mode: SendMode::Direct(ClientId::Client(client)),
