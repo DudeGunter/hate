@@ -1,10 +1,11 @@
 use aeronet::io::Session;
-use bevy::{math::VectorSpace, prelude::*};
+use bevy::prelude::*;
 use bevy_replicon::prelude::{FromClient, Replicated, SendMode, ToClients};
 use shared::{
     GameState,
-    management::scene::{
-        AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath,
+    management::{
+        ownership::OwnedBy,
+        scene::{AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath},
     },
     player::{Player, Position},
 };
@@ -19,15 +20,38 @@ pub fn plugin(app: &mut App) {
         Update,
         wait_on_response.run_if(in_state(GameState::Loading)),
     );
+
+    app.add_systems(
+        Update,
+        randomly_change_positions.run_if(in_state(GameState::Playing)),
+    );
 }
 
 #[derive(Resource, Reflect, Default)]
 pub struct GameLoaded(pub bool);
 
-pub fn spawn_basic_2d_scene(mut commands: Commands, players: Query<Entity, With<Player>>) {
+pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With<Session>>) {
     commands.insert_resource(GameLoaded(true));
-    for entity in players {
-        commands.entity(entity).insert(Position(Vec2::ZERO));
+    for entity in sessions {
+        let character = commands
+            .spawn((Player, Position(Vec2::ZERO), Replicated))
+            .id();
+        commands
+            .entity(entity)
+            .add_one_related::<OwnedBy>(character);
+    }
+}
+
+pub fn randomly_change_positions(player_positions: Query<&mut Position, With<Player>>) {
+    for mut position in player_positions {
+        let seed = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .subsec_nanos();
+        match seed % 2 {
+            0 => position.0.x += 1.0,
+            _ => position.0.x -= 1.0,
+        }
     }
 }
 

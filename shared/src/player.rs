@@ -12,7 +12,7 @@ pub fn plugin(app: &mut App) {
 #[derive(Component, Reflect, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Player;
 
-#[derive(Component, Reflect, Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Component, Reflect, Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlayerColor(pub Color);
 
 #[derive(Component, Reflect, Clone, Copy, Debug, Serialize, Deserialize)]

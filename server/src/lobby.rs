@@ -1,6 +1,9 @@
 use aeronet::io::Session;
 use aeronet_webtransport::server::*;
-use bevy::{app::DynEq, prelude::*};
+use bevy::{
+    app::{DynEq, HierarchyPropagatePlugin, Propagate},
+    prelude::*,
+};
 use bevy_replicon::prelude::*;
 use shared::{
     AppState,
@@ -11,6 +14,9 @@ use shared::{
 use std::time::SystemTime;
 
 pub fn plugin(app: &mut App) {
+    app.add_plugins(HierarchyPropagatePlugin::<PlayerColor, (), OwnedBy>::new(
+        Update,
+    ));
     app.add_systems(OnEnter(AppState::Lobby), || {
         info!("Successfully entered lobby.");
         info!("{}", LET_HOST_KNOW_KEY);
@@ -71,7 +77,6 @@ pub fn on_connected(
     let lobby_display = commands
         .spawn((
             PlayerColorDisplay,
-            PlayerColor(color),
             DespawnOnExit(AppState::Lobby),
             Replicated,
         ))
@@ -79,7 +84,7 @@ pub fn on_connected(
 
     commands
         .entity(client)
-        .insert((Player, PlayerColor(color), ControlAuthority, Replicated))
+        .insert((Propagate(PlayerColor(color)), ControlAuthority, Replicated))
         .add_one_related::<OwnedBy>(lobby_display);
 
     goto.write(ToClients {
