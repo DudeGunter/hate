@@ -26,10 +26,10 @@ bevy-inspector-egui = "0.36"
 bevy_transform_interpolation = "0.4"
 # networking
 serde = "1.0"
-aeronet = "0.19"
-aeronet_webtransport = { version = "0.19", features = ["dangerous-configuration"] }
-aeronet_replicon = "0.19"
-bevy_replicon = "0.38"
+aeronet = "0.20"
+aeronet_webtransport = { version = "0.20", features = ["dangerous-configuration"] }
+aeronet_replicon = "0.20"
+bevy_replicon = "0.39"
 # physics
 avian3d = { version = "0.6", features = ["serialize"] }
 # server tui
