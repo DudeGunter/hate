@@ -31,7 +31,7 @@ use serde::{Deserialize, Serialize};
 // are also despawned.
 // It is essentially a parent child relationship which doesn't move transforms or anything like that
 // and is purely meant for networking, although it could be applied in other contexts.
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Deref)]
 #[relationship_target(relationship = Owner, linked_spawn)]
 pub struct Owns(Vec<Entity>);
 

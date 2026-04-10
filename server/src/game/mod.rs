@@ -24,7 +24,7 @@ pub fn plugin(app: &mut App) {
 
     app.add_systems(
         Update,
-        randomly_change_positions.run_if(in_state(GameState::Playing)),
+        (randomly_change_positions, rotate_player_positions).run_if(in_state(GameState::Playing)),
     );
 }
 
@@ -43,6 +43,12 @@ pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With
             ))
             .id();
         commands.entity(entity).add_one_related::<Owner>(character);
+    }
+}
+
+pub fn rotate_player_positions(angular_velocities: Query<&mut AngularVelocity, With<Player>>) {
+    for mut velocity in angular_velocities {
+        velocity.y += 1.0;
     }
 }
 
