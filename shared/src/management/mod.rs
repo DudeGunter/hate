@@ -1,5 +1,5 @@
 use crate::AppState;
-use bevy::prelude::*;
+use bevy::{ecs::entity::MapEntities, prelude::*};
 use bevy_replicon::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -19,6 +19,8 @@ pub fn plugin(app: &mut App) {
 
     app.add_client_message::<PleaseGoTo>(Channel::Ordered);
     app.add_server_message::<GoTo>(Channel::Ordered);
+
+    app.add_mapped_server_message::<ClientOwns>(Channel::Ordered);
 }
 
 /// Any client with this can have control authority over the server
@@ -34,3 +36,6 @@ pub struct PleaseGoTo(pub AppState);
 /// which then relays this to all clients and the server
 #[derive(Message, Serialize, Deserialize, Clone, Copy, Debug)]
 pub struct GoTo(pub AppState);
+
+#[derive(Message, MapEntities, Serialize, Deserialize)]
+pub struct ClientOwns(#[entities] pub Entity);

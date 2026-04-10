@@ -4,7 +4,7 @@ use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
     AppState,
     management::PleaseGoTo,
-    player::{Player, PlayerColor, PlayerColorDisplay},
+    player::{ColorDisplay, Player, PlayerColor},
 };
 
 pub fn plugin(app: &mut App) {
@@ -82,7 +82,7 @@ pub fn update_player_count(
 
 pub fn handle_player_color_display(
     mut commands: Commands,
-    player_color_displays: Query<(Entity, &PlayerColor), (Without<Node>, With<PlayerColorDisplay>)>,
+    player_color_displays: Query<(Entity, &PlayerColor), (Without<Node>, With<ColorDisplay>)>,
     containers: Query<Entity, With<PlayerColorDisplayContainer>>,
 ) {
     if let Ok(container_entity) = containers.single() {

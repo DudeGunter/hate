@@ -8,7 +8,7 @@ use bevy_replicon::prelude::*;
 use shared::{
     AppState,
     consts::LET_HOST_KNOW_KEY,
-    management::{ControlAuthority, GoTo, ownership::Owner},
+    management::{ClientOwns, ControlAuthority, GoTo, ownership::Owner},
     player::*,
 };
 use std::time::SystemTime;
@@ -50,6 +50,7 @@ pub fn on_connected(
     clients: Query<&ChildOf>,
     mut commands: Commands,
     mut goto: MessageWriter<ToClients<GoTo>>,
+    mut client_owns: MessageWriter<ToClients<ClientOwns>>,
     current_game_state: Res<State<AppState>>,
 ) {
     // Only accept if in lobby
@@ -75,17 +76,18 @@ pub fn on_connected(
     let color = Color::srgb_u8((time * 3) as u8, (time * 5) as u8, (time * 7) as u8);
 
     let lobby_display = commands
-        .spawn((
-            PlayerColorDisplay,
-            DespawnOnExit(AppState::Lobby),
-            Replicated,
-        ))
+        .spawn((ColorDisplay, DespawnOnExit(AppState::Lobby), Replicated))
         .id();
 
     commands
         .entity(client)
         .insert((Propagate(PlayerColor(color)), ControlAuthority, Replicated))
         .add_one_related::<Owner>(lobby_display);
+
+    client_owns.write(ToClients {
+        mode: SendMode::Direct(ClientId::Client(client)),
+        message: ClientOwns(client),
+    });
 
     goto.write(ToClients {
         mode: SendMode::Direct(ClientId::Client(client)),
