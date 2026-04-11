@@ -2,20 +2,37 @@ use avian3d::prelude::TransformInterpolation;
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
 use shared::{
-    management::ownership::Owns,
+    GameState,
     player::{Player, PlayerColor},
 };
 
-use crate::control::LocalClient;
+use crate::control::LocallyOwned;
 
 pub fn plugin(app: &mut App) {
     app.add_observer(on_add_player);
+    app.add_systems(OnEnter(GameState::Playing), insert_player_camera);
+}
+
+pub fn insert_player_camera(
+    mut commands: Commands,
+    local_player_query: Query<Entity, (With<Player>, With<LocallyOwned>)>,
+) {
+    if let Ok(local_player) = local_player_query.single() {
+        commands
+            .entity(local_player)
+            .insert((Camera3d::default(), PrimaryEguiContext));
+    } else {
+        info!("Failed to retreive local player.");
+        info!(
+            "If THIS -> {} <- is not 1, then something went wrong.",
+            local_player_query.count()
+        );
+    }
 }
 
 pub fn on_add_player(
     trigger: On<Add, Player>,
     mut commands: Commands,
-    locally_owned: Single<&Owns, With<LocalClient>>,
     colors: Query<&PlayerColor>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -26,10 +43,4 @@ pub fn on_add_player(
         Mesh3d(meshes.add(Cylinder::new(0.5, 1.0))),
         MeshMaterial3d(materials.add(StandardMaterial::from_color(color))),
     ));
-
-    if locally_owned.contains(&trigger.entity) {
-        commands
-            .entity(trigger.entity)
-            .insert((Camera3d::default(), PrimaryEguiContext));
-    }
 }
