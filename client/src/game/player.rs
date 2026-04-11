@@ -1,3 +1,4 @@
+use crate::control::LocallyOwned;
 use avian3d::prelude::TransformInterpolation;
 use bevy::prelude::*;
 use bevy_inspector_egui::bevy_egui::PrimaryEguiContext;
@@ -5,8 +6,6 @@ use shared::{
     GameState,
     player::{Player, PlayerColor},
 };
-
-use crate::control::LocallyOwned;
 
 pub fn plugin(app: &mut App) {
     app.add_observer(on_add_player);
@@ -22,9 +21,8 @@ pub fn insert_player_camera(
             .entity(local_player)
             .insert((Camera3d::default(), PrimaryEguiContext));
     } else {
-        info!("Failed to retreive local player.");
         info!(
-            "If THIS -> {} <- is not 1, then something went wrong.",
+            "Failed to retreive single local player. There are {} local players.",
             local_player_query.count()
         );
     }
