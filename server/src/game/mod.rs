@@ -15,7 +15,7 @@ pub fn plugin(app: &mut App) {
     app.add_sub_state::<GameState>();
     app.add_systems(
         OnEnter(GameState::Loading),
-        (spawn_basic_2d_scene, spawn_replicated_scene_reference),
+        (spawn_players, spawn_replicated_scene_reference),
     );
     app.add_systems(
         Update,
@@ -26,10 +26,10 @@ pub fn plugin(app: &mut App) {
 #[derive(Resource, Reflect, Default)]
 pub struct GameLoaded(pub bool);
 
-pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With<Session>>) {
+pub fn spawn_players(mut commands: Commands, sessions: Query<Entity, With<Session>>) {
     commands.insert_resource(GameLoaded(true));
     for entity in sessions {
-        let character = commands
+        let player = commands
             .spawn((
                 Player,
                 LockedAxes::ROTATION_LOCKED,
@@ -38,7 +38,7 @@ pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With
                 Replicated,
             ))
             .id();
-        commands.entity(entity).add_one_related::<Owner>(character);
+        commands.entity(entity).add_one_related::<Owner>(player);
     }
 }
 
