@@ -21,11 +21,6 @@ pub fn plugin(app: &mut App) {
         Update,
         wait_on_response.run_if(in_state(GameState::Loading)),
     );
-
-    app.add_systems(
-        Update,
-        (randomly_change_positions, rotate_player_positions).run_if(in_state(GameState::Playing)),
-    );
 }
 
 #[derive(Resource, Reflect, Default)]
@@ -37,31 +32,13 @@ pub fn spawn_basic_2d_scene(mut commands: Commands, sessions: Query<Entity, With
         let character = commands
             .spawn((
                 Player,
-                RigidBody::Dynamic,
+                LockedAxes::ROTATION_LOCKED,
+                RigidBody::Kinematic,
                 Collider::cylinder(0.5, 1.0),
                 Replicated,
             ))
             .id();
         commands.entity(entity).add_one_related::<Owner>(character);
-    }
-}
-
-pub fn rotate_player_positions(angular_velocities: Query<&mut AngularVelocity, With<Player>>) {
-    for mut velocity in angular_velocities {
-        velocity.y += 1.0;
-    }
-}
-
-pub fn randomly_change_positions(player_velocities: Query<&mut LinearVelocity, With<Player>>) {
-    for mut velocity in player_velocities {
-        let seed = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .subsec_nanos();
-        match seed % 2 {
-            0 => velocity.x += 1.0,
-            _ => velocity.x -= 1.0,
-        }
     }
 }
 
