@@ -1,7 +1,6 @@
+use crate::control::LocallyOwned;
 use bevy::prelude::*;
 use shared::player::Player;
-
-use crate::control::LocallyOwned;
 
 #[derive(Component, Reflect)]
 pub struct PlayerCamera {

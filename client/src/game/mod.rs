@@ -8,6 +8,7 @@ pub fn plugin(app: &mut App) {
     app.add_sub_state::<GameState>();
     app.add_plugins(player::plugin);
     app.add_systems(OnEnter(AppState::InGame), load::manage_replicated_scene);
+    app.add_systems(OnEnter(GameState::Loading), spawn_playground);
     app.add_systems(
         Update,
         load::check_please_load_scenes.run_if(in_state(GameState::Loading)),
@@ -16,4 +17,15 @@ pub fn plugin(app: &mut App) {
         Update,
         load::wait_on_server_and_others.run_if(in_state(GameState::WaitingOnOthers)),
     );
+}
+
+pub fn spawn_playground(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    commands.spawn((
+        Mesh3d(meshes.add(Cuboid::new(10.0, 0.1, 10.0))),
+        MeshMaterial3d(materials.add(StandardMaterial::from_color(Color::srgb(0.0, 0.6, 0.0)))),
+    ));
 }

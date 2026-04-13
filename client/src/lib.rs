@@ -38,7 +38,7 @@ pub fn plugin(app: &mut App) {
         host::plugin,
     ));
     let mut physics_time = Time::<Physics>::default();
-    physics_time.pause();
+    physics_time.pause(); // the simulation is handled by the server
     app.insert_resource(physics_time);
     app.insert_state(shared::AppState::MainMenu);
     app.add_observer(connect::connect_client);

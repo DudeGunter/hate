@@ -1,22 +1,28 @@
 use aeronet::io::Session;
-use avian3d::prelude::*;
 use bevy::prelude::*;
 use bevy_replicon::prelude::{FromClient, Replicated, SendMode, ToClients};
 use shared::{
     GameState,
-    management::{
-        ownership::Owner,
-        scene::{AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath},
+    management::scene::{
+        AllFinishedLoading, FinishedLoading, GameScene, PleaseLoad, ReplicatedScenePath,
     },
-    player::Player,
 };
+
+mod player;
 
 pub fn plugin(app: &mut App) {
     app.add_sub_state::<GameState>();
+    app.add_plugins(player::plugin);
     app.add_systems(
         OnEnter(GameState::Loading),
-        (spawn_players, spawn_replicated_scene_reference),
+        spawn_replicated_scene_reference,
     );
+
+    // spawn playground
+    app.add_systems(OnEnter(GameState::Loading), |mut commands: Commands| {
+        commands.spawn(shared::playground::collider_scene());
+    });
+
     app.add_systems(
         Update,
         wait_on_response.run_if(in_state(GameState::Loading)),
@@ -26,23 +32,8 @@ pub fn plugin(app: &mut App) {
 #[derive(Resource, Reflect, Default)]
 pub struct GameLoaded(pub bool);
 
-pub fn spawn_players(mut commands: Commands, sessions: Query<Entity, With<Session>>) {
-    commands.insert_resource(GameLoaded(true));
-    for entity in sessions {
-        let player = commands
-            .spawn((
-                Player,
-                LockedAxes::ROTATION_LOCKED,
-                RigidBody::Kinematic,
-                Collider::cylinder(0.5, 1.0),
-                Replicated,
-            ))
-            .id();
-        commands.entity(entity).add_one_related::<Owner>(player);
-    }
-}
-
 pub fn spawn_replicated_scene_reference(mut commands: Commands) {
+    commands.insert_resource(GameLoaded(true));
     commands.spawn((
         Replicated,
         GameScene,

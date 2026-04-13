@@ -6,6 +6,7 @@ pub mod level;
 pub mod management;
 pub mod physics;
 pub mod player;
+pub mod playground;
 
 pub fn plugin(app: &mut App) {
     app.add_plugins((
