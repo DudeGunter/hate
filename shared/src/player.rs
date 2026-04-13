@@ -14,7 +14,16 @@ pub struct Player;
 #[derive(Component, Reflect, Clone, Copy, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PlayerColor(pub Color);
 
-pub struct PlayerInput {}
-
 #[derive(Component, Reflect, Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct ColorDisplay;
+
+pub mod actions {
+    //! player actions.
+    //! I think bei may be a very good candidate here
+    //! more thoughts...
+    pub struct Action;
+
+    pub struct Jump;
+
+    pub struct Move;
+}
