@@ -24,6 +24,7 @@ bevy = { version = "0.18", default-features = false, features = ["dynamic_linkin
 bevy_console.git = "https://github.com/DudeGunter/bevy_console.git"
 bevy-inspector-egui = "0.36"
 bevy_transform_interpolation = "0.4"
+bevy_enhanced_input = "0.24"
 # networking
 serde = "1.0"
 aeronet = "0.20"

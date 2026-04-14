@@ -21,9 +21,15 @@ pub mod actions {
     //! player actions.
     //! I think bei may be a very good candidate here
     //! more thoughts...
-    pub struct Action;
+    use bevy_enhanced_input::prelude::*;
 
+    pub struct MovementContext;
+
+    #[derive(InputAction)]
+    #[action_output(bool)]
     pub struct Jump;
 
+    #[derive(InputAction)]
+    #[action_output(Vec2)]
     pub struct Move;
 }
